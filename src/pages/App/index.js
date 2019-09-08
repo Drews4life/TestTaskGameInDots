@@ -55,19 +55,23 @@ class App extends Component {
   startGame = () => {
     this.clearTheGame()
 
-    this.setState({active: this.pickRandomItem(), inGame: true}, this.restartCountDown)
+    const newGridItem = this.pickRandomItem()
+    this.setState({active: newGridItem, inGame: true}, this.restartCountDown)
   }
 
-  restartCountDown = () => this.setState(prevState => ({
-    ...prevState,
-    currentSecondsDelay: prevState.delay
-  }), () => {
+  restartCountDown = () => {
     if(this.intervalHandle !== undefined) {
-        clearInterval(this.intervalHandle)
+      clearInterval(this.intervalHandle)
     }
-    const diff = this.state.extractedDelay === .1 ? 900 : 1000
-    this.intervalHandle = setInterval(this.tick, diff);
-  })
+
+    this.setState(prevState => ({
+      ...prevState,
+      currentSecondsDelay: prevState.delay
+    }), () => {
+      const diff = this.state.extractedDelay === .1 ? 900 : 1000
+      this.intervalHandle = setInterval(this.tick, diff);
+    })
+  }
 
   tick = () => this.setState(prevState => ({
     ...prevState,
@@ -113,9 +117,11 @@ class App extends Component {
       return 
     }
 
+    const newItem = this.pickRandomItem()
+
     this.setState(prevState => ({
       ...prevState,
-      active: this.pickRandomItem()
+      active: newItem
     }), () => {
       this.restartCountDown()
     })
